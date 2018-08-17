@@ -1,3 +1,5 @@
+import time
+import collections
 
 
 class User(object):
@@ -6,56 +8,99 @@ class User(object):
         self.username = username
         self.email = email
         self.password = password
-        self.questions = {}
-        self.answers = {}
-        self.comments = {}
+        self.questions = collections.OrderedDict()
+        self.answers = collections.OrderedDict()
+        self.comments = collections.OrderedDict()
+        self.time_created = time.asctime()
         return None
 
     def ask(self, question):
         self.questions.update({len(self.questions) + 1: question})
         return None
 
+    def post_answer(self, answer):
+        self.answers.update({len(self.answers) + 1: answer})
+        return None
+
+    def post_comment(self, comment):
+        self.comments.update({len(self.comments) + 1: comment})
+        return None
+
+    def unpack(self):
+        questions = collections.OrderedDict()
+        answers = collections.OrderedDict()
+        comments = collections.OrderedDict()
+        for question in self.questions:
+            questions[question] = self.questions[question].unpack()
+        for answer in self.answers:
+            answers[answer] = self.answers[answer].unpack()
+        for comment in self.comments:
+            comments[comment] = self.comments[comment].unpack()
+        od = collections.OrderedDict([('user', self.username),
+                                      ('email', self.email),
+                                      ('signed up', self.time_created),
+                                      ('questions posted', dict(questions)),
+                                      ('answers posted', dict(answers)),
+                                      ('comments made', dict(comments))])
+        return dict(od)
+
+
+class Question(object):
+
+    def __init__(self, sender, question):
+        self.value = question
+        self.answers = collections.OrderedDict()
+        self.time_created = time.asctime()
+        self.asker = sender
+        return None
+
     def add_answer(self, answer):
         self.answers.update({len(self.answers) + 1: answer})
+        return None
+
+    def unpack(self):
+        answers = collections.OrderedDict()
+        for answer in self.answers:
+            answers[answer] = self.answers[answer].unpack()
+        return {'question': self.value, 'time_posted': self.time_created,
+                'asked by': self.asker, 'answers': dict(answers)}
+
+
+class Answer(object):
+
+    def __init__(self, sender, answer):
+        self.value = answer
+        self.comments = collections.OrderedDict()
+        self.time_created = time.asctime()
+        self.answerer = sender
         return None
 
     def add_comment(self, comment):
         self.comments.update({len(self.comments) + 1: comment})
         return None
 
-
-class Question(object):
-
-    def __init__(self, question):
-        self.value = question
-        self.answers = {}
-        return None
-
-    def add_answer(self, answer):
-        self.answers.update({len(self.answers) + 1: answer})
-        return None
-
-
-class Answer(object):
-
-    def __init__(self, answer):
-        self.value = answer
-        self.comments = {}
-        return None
-
-    def add_comment(self, answer):
-        self.comments.update({len(self.comments) + 1: comment})
-        return None
+    def unpack(self):
+        comments = collections.OrderedDict()
+        for comment in self.comments:
+            comments[comment] = self.comments[comment].unpack()
+        return {'answer': self.value, 'time_posted': self.time_created,
+                'answered by': self.answerer, 'comments': dict(comments)}
 
 
 class Comment(object):
 
-    def __init__(self, comment):
+    def __init__(self, sender, comment):
         self.value = comment
+        self.time_created = time.asctime()
+        self.commenter = sender
         return None
 
+    def unpack(self):
+        return {'comment': self.value, 'time_posted': self.time_created,
+                'comment by': self.commenter}
 
-users = {}
-questions = {}
-answers = {}
-comments = {}
+
+users = collections.OrderedDict()
+questions = collections.OrderedDict()
+answers = collections.OrderedDict()
+comments = collections.OrderedDict()
