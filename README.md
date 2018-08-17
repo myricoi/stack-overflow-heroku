@@ -1,6 +1,4 @@
-[![Build Status](https://travis-ci.org/myricoi/StackOverflow_Lite.svg?branch=feature%2Fdevelop-159593458)](https://travis-ci.org/myricoi/StackOverflow_Lite)
-
-StackOverflow_lite Web Application
+**StackOverflow_lite Web Application**
 
 StackOverflow-lite is an online platform where people can ask questions and provide answers. At minimum, it has the following features:
 a) Users can create an account and log in.
@@ -15,7 +13,7 @@ i) Users can fetch all questions he/she has ever asked on the platform
 j) Users can search for questions on the platform
 j) Users can view questions with the most answers.
 
-This project is in progress and this documentation will be updated periodically. The development notes and stories can be accessed using the 
+ The development notes and stories can be accessed using the 
 link https://www.pivotaltracker.com/n/projects/2189407
 
 
