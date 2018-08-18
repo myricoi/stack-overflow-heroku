@@ -108,5 +108,5 @@ def get_post_comments(question_id, answer_id):
                 models.comments[len(models.comments) + 1] = comment
                 (models.questions[question_id].answers[answer_id]
                  .add_comment(comment))
-                return jsonify({'results': 'success', 'time':
+                return jsonify({'results': 'successful', 'time':
                                 comment.time_created})
