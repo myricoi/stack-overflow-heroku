@@ -62,7 +62,7 @@ def get_post_answers(question_id):
                 return jsonify({})
             else:
                 for answerid in val:
-                    answers[answerid] = models.answers[answerid].unpack()
+                    answers[answerid] = val[answerid].unpack()
                 return jsonify(answers)
         else:
             sender = request.args.get('sender', None, str)
@@ -75,3 +75,38 @@ def get_post_answers(question_id):
                 models.answers[len(models.answers) + 1] = ans
                 return jsonify({'results':
                                 'successful', 'time': ans.time_created})
+
+
+@mod.route('/questions/<int:question_id>/answers/<int:answer_id>/comments',
+           methods=['GET', 'POST'])
+def get_post_comments(question_id, answer_id):
+    not_found = (question_id > len(models.questions)) or (
+                answer_id > len(models.answers))
+    if not_found:
+        return jsonify({'error': 'NOT FOUND'})
+    elif question_id <= 0 or answer_id <= 0:
+        return jsonify({'error': 'bad request'})
+    else:
+        if request.method == 'GET':
+            comments = OrderedDict()
+            comments_on_answer = (models.questions[question_id]
+                                  .answers[answer_id].comments)
+            if not comments_on_answer:
+                return jsonify({})
+            else:
+                for commentid in comments_on_answer:
+                    comments[commentid] = (comments_on_answer[commentid]
+                                           .unpack())
+                return jsonify(comments)
+        else:
+            sender = request.args.get('sender', None, str)
+            comment = request.args.get('comment', None, str)
+            if not (sender and comment):
+                return jsonify({'error': 'no parameters send'})
+            else:
+                comment = models.Comment(sender, comment)
+                models.comments[len(models.comments) + 1] = comment
+                (models.questions[question_id].answers[answer_id]
+                 .add_comment(comment))
+                return jsonify({'results': 'successful', 'time':
+                                comment.time_created})
