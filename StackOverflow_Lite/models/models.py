@@ -84,7 +84,7 @@ class Answer(object):
         for comment in self.comments:
             comments[comment] = self.comments[comment].unpack()
         return {'answer': self.value, 'timePosted': self.time_created,
-                'answered by': self.answerer, 'comments': dict(comments)}
+                'answeredBy': self.answerer, 'comments': dict(comments)}
 
 
 class Comment(object):
@@ -97,7 +97,7 @@ class Comment(object):
 
     def unpack(self):
         return {'comment': self.value, 'timePosted': self.time_created,
-                'comment by': self.commenter}
+                'commentBy': self.commenter}
 
 
 users = collections.OrderedDict()
