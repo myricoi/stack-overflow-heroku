@@ -36,3 +36,42 @@ def get_all_questions():
                             my_quiz.time_created})
         else:
             return jsonify({'error': 'no parameters received'})
+
+
+@mod.route('/questions/<int:question_id>', methods=['GET'])
+def get_specific_question(question_id):
+    if len(models.questions) < question_id:
+        return jsonify({'error': 'NOT FOUND', 'code': 404})
+    elif question_id <= 0:
+        return jsonify({'error': 'bad request'})
+    else:
+        return jsonify(models.questions[question_id].unpack())
+
+
+@mod.route('/questions/<int:question_id>/answers', methods=['GET', 'POST'])
+def get_post_answers(question_id):
+    if len(models.questions) < question_id:
+        return jsonify({'error': 'NOT FOUND', 'code': 404})
+    elif question_id <= 0:
+        return jsonify({'error': 'bad request'})
+    else:
+        if request.method == 'GET':
+            val = models.questions[question_id].answers
+            answers = OrderedDict()
+            if not val:
+                return jsonify({})
+            else:
+                for answerid in val:
+                    answers[answerid] = models.answers[answerid].unpack()
+                return jsonify(answers)
+        else:
+            sender = request.args.get('sender', None, str)
+            answer = request.args.get('answer', None, str)
+            if not (sender and answer):
+                return jsonify({'error': 'missing parameters'})
+            else:
+                ans = models.Answer(sender, answer)
+                models.questions[question_id].add_answer(ans)
+                models.answers[len(models.answers) + 1] = ans
+                return jsonify({'results':
+                                'successful', 'time': ans.time_created})
