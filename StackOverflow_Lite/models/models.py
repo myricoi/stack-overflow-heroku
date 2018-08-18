@@ -38,10 +38,10 @@ class User(object):
             comments[comment] = self.comments[comment].unpack()
         od = collections.OrderedDict([('user', self.username),
                                       ('email', self.email),
-                                      ('signed up', self.time_created),
-                                      ('questions posted', dict(questions)),
-                                      ('answers posted', dict(answers)),
-                                      ('comments made', dict(comments))])
+                                      ('signedUp', self.time_created),
+                                      ('questionsPosted', dict(questions)),
+                                      ('answersPosted', dict(answers)),
+                                      ('commentsMade', dict(comments))])
         return dict(od)
 
 
@@ -62,8 +62,8 @@ class Question(object):
         answers = collections.OrderedDict()
         for answer in self.answers:
             answers[answer] = self.answers[answer].unpack()
-        return {'question': self.value, 'time_posted': self.time_created,
-                'asked by': self.asker, 'answers': dict(answers)}
+        return {'question': self.value, 'timePosted': self.time_created,
+                'askedBy': self.asker, 'answers': dict(answers)}
 
 
 class Answer(object):
@@ -83,7 +83,7 @@ class Answer(object):
         comments = collections.OrderedDict()
         for comment in self.comments:
             comments[comment] = self.comments[comment].unpack()
-        return {'answer': self.value, 'time_posted': self.time_created,
+        return {'answer': self.value, 'timePosted': self.time_created,
                 'answered by': self.answerer, 'comments': dict(comments)}
 
 
@@ -96,7 +96,7 @@ class Comment(object):
         return None
 
     def unpack(self):
-        return {'comment': self.value, 'time_posted': self.time_created,
+        return {'comment': self.value, 'timePosted': self.time_created,
                 'comment by': self.commenter}
 
 
