@@ -58,7 +58,7 @@ def test_classes_correctly_build_up_2():
     ans.add_comment(com)
     models.users.update({1: dickson, 2: manu})
     json1 = {'comment': 'yeah', 'timePosted':
-             ans.time_created, 'comment by': 'dickson'}
+             ans.time_created, 'commentBy': 'dickson'}
     assert com.unpack() == json1
 
 
@@ -76,9 +76,9 @@ def test_classes_correctly_build_up_3():
     ans.add_comment(com)
     models.users.update({1: dickson, 2: manu})
     json2 = {'answer': 'who you are', 'timePosted':
-             ans.time_created, 'answered by': 'manu',
+             ans.time_created, 'answeredBy': 'manu',
              'comments': {1: {'comment': 'yeah', 'timePosted':
-                              ans.time_created, 'comment by':
+                              ans.time_created, 'commentBy':
                               'dickson'}}}
     assert json2 == ans.unpack()
 
@@ -99,9 +99,9 @@ def test_classes_correctly_build_up_4():
              quiz.time_created, 'askedBy': 'dickson',
              'answers': {1: {'answer': 'who you are',
                              'timePosted': ans.time_created,
-                             'answered by': 'manu', 'comments':
+                             'answeredBy': 'manu', 'comments':
                              {1: {'comment': 'yeah', 'timePosted':
-                                  ans.time_created, 'comment by':
+                                  ans.time_created, 'commentBy':
                                   'dickson'}}}}}
     assert quiz.unpack() == json3
 
@@ -123,11 +123,11 @@ def test_classes_correctly_build_up_5():
             {1: {'question': 'who am I', 'timePosted': quiz.time_created,
                  'askedBy': 'dickson', 'answers':
                  {1: {'answer': 'who you are', 'timePosted': ans.time_created,
-                      'answered by': 'manu', 'comments':
+                      'answeredBy': 'manu', 'comments':
                       {1: {'comment': 'yeah', 'timePosted': ans.time_created,
-                           'comment by': 'dickson'}}}}}},
+                           'commentBy': 'dickson'}}}}}},
             'answersPosted': {},
             'commentsMade': {1: {'comment': 'yeah', 'timePosted':
                                  ans.time_created,
-                                 'comment by': 'dickson'}}}
+                                 'commentBy': 'dickson'}}}
     assert dickson.unpack() == json
