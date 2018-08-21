@@ -2,7 +2,9 @@ import time
 import collections
 
 
-class User(object):
+class User():
+    
+    users = collections.OrderedDict()
 
     def __init__(self, username, email, password):
         self.username = username
@@ -12,19 +14,16 @@ class User(object):
         self.answers = collections.OrderedDict()
         self.comments = collections.OrderedDict()
         self.time_created = time.asctime()
-        return None
+        User.users.update({len(User.users) + 1: self})
 
     def ask(self, question):
         self.questions.update({len(self.questions) + 1: question})
-        return None
 
     def post_answer(self, answer):
         self.answers.update({len(self.answers) + 1: answer})
-        return None
 
     def post_comment(self, comment):
         self.comments.update({len(self.comments) + 1: comment})
-        return None
 
     def unpack(self):
         questions = collections.OrderedDict()
@@ -45,18 +44,19 @@ class User(object):
         return dict(od)
 
 
-class Question(object):
+class Question():
+
+    questions = collections.OrderedDict()
 
     def __init__(self, sender, question):
         self.value = question
         self.answers = collections.OrderedDict()
         self.time_created = time.asctime()
         self.asker = sender
-        return None
+        Question.questions.update({len(Question.questions) + 1: self})
 
     def add_answer(self, answer):
         self.answers.update({len(self.answers) + 1: answer})
-        return None
 
     def unpack(self):
         answers = collections.OrderedDict()
@@ -66,18 +66,19 @@ class Question(object):
                 'askedBy': self.asker, 'answers': dict(answers)}
 
 
-class Answer(object):
+class Answer():
+
+    answers = collections.OrderedDict()
 
     def __init__(self, sender, answer):
         self.value = answer
         self.comments = collections.OrderedDict()
         self.time_created = time.asctime()
         self.answerer = sender
-        return None
+        Answer.answers.update({len(Answer.answers) + 1: self})
 
     def add_comment(self, comment):
         self.comments.update({len(self.comments) + 1: comment})
-        return None
 
     def unpack(self):
         comments = collections.OrderedDict()
@@ -87,20 +88,17 @@ class Answer(object):
                 'answeredBy': self.answerer, 'comments': dict(comments)}
 
 
-class Comment(object):
+class Comment():
+
+    comments = collections.OrderedDict()
 
     def __init__(self, sender, comment):
         self.value = comment
         self.time_created = time.asctime()
         self.commenter = sender
-        return None
+        Comment.comments.update({len(Comment.comments) + 1: self})
 
     def unpack(self):
         return {'comment': self.value, 'timePosted': self.time_created,
                 'commentBy': self.commenter}
 
-
-users = collections.OrderedDict()
-questions = collections.OrderedDict()
-answers = collections.OrderedDict()
-comments = collections.OrderedDict()

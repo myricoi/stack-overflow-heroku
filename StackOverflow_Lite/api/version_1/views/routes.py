@@ -9,7 +9,7 @@ mod = Blueprint('api', __name__)
 @mod.route('/questions', methods=['GET', 'POST'])
 def get_all_questions():
     if request.method == 'GET':
-        if not models.questions:
+        if not models.Question.questions:
             resp = make_response(jsonify(''))
             resp.status_code = 404
             resp.mimetype = 'application/json'
@@ -18,19 +18,19 @@ def get_all_questions():
             select_query = request.args.get('select_query', None, str)
             if select_query:
                 return_val = OrderedDict()
-                for questionid in models.questions:
-                    if select_query in models.questions[questionid].value:
+                for questionid in models.Question.questions:
+                    if select_query in models.Question.questions[questionid].value:
                         return_val.update(
                                           {len(return_val) +
-                                           1: models.questions[questionid]
+                                           1: models.Question.questions[questionid]
                                            .unpack()})
                 resp = make_response(jsonify(dict(return_val)))
                 resp.status_code = 200
                 resp.mimetype = 'application/json'
                 return resp
             return_val = OrderedDict()
-            for questionid in models.questions:
-                return_val[questionid] = models.questions[questionid].unpack()
+            for questionid in models.Question.questions:
+                return_val[questionid] = models.Question.questions[questionid].unpack()
             resp = make_response(jsonify(dict(return_val)))
             resp.status_code = 200
             resp.mimetype = 'application/json'
@@ -40,7 +40,6 @@ def get_all_questions():
         quiz = request.args.get('quiz', default=None, type=str)
         if sender and quiz:
             my_quiz = models.Question(sender, quiz)
-            models.questions.update({len(models.questions) + 1: my_quiz})
             resp = make_response(jsonify('question added'))
             resp.status_code = 200
             resp.mimetype = 'application/json'
@@ -54,7 +53,7 @@ def get_all_questions():
 
 @mod.route('/questions/<int:question_id>', methods=['GET'])
 def get_specific_question(question_id):
-    if len(models.questions) < question_id:
+    if len(models.Question.questions) < question_id:
         resp = make_response(jsonify('NOT FOUND'))
         resp.status_code = 404
         resp.mimetype = 'application/json'
@@ -65,7 +64,7 @@ def get_specific_question(question_id):
         resp.mimetype = 'application/json'
         return resp
     else:
-        resp = make_response(jsonify(models.questions[question_id]
+        resp = make_response(jsonify(models.Question.questions[question_id]
                                      .unpack()))
         resp.status_code = 200
         resp.mimetype = 'application/json'
@@ -74,7 +73,7 @@ def get_specific_question(question_id):
 
 @mod.route('/questions/<int:question_id>/answers', methods=['GET', 'POST'])
 def get_post_answers(question_id):
-    if len(models.questions) < question_id:
+    if len(models.Question.questions) < question_id:
         resp = make_response(jsonify('NOT FOUND'))
         resp.status_code = 404
         resp.mimetype = 'application/json'
@@ -87,7 +86,7 @@ def get_post_answers(question_id):
     else:
         select_query = request.args.get('select_query', None, str)
         if request.method == 'GET':
-            val = models.questions[question_id].answers
+            val = models.Question.questions[question_id].answers
             answers = OrderedDict()
             if not val:
                 resp = make_response(jsonify(''))
@@ -119,8 +118,7 @@ def get_post_answers(question_id):
                 return resp
             else:
                 ans = models.Answer(sender, answer)
-                models.questions[question_id].add_answer(ans)
-                models.answers[len(models.answers) + 1] = ans
+                models.Question.questions[question_id].add_answer(ans)
                 resp = make_response(jsonify('answer posted'))
                 resp.status_code = 201
                 resp.mimetype = 'application/json'
@@ -130,8 +128,8 @@ def get_post_answers(question_id):
 @mod.route('/questions/<int:question_id>/answers/<int:answer_id>/comments',
            methods=['GET', 'POST'])
 def get_post_comments(question_id, answer_id):
-    not_found = (question_id > len(models.questions)) or (
-                answer_id > len(models.answers))
+    not_found = (question_id > len(models.Question.questions)) or (
+                answer_id > len(models.Question.questions[question_id].answers))
     if not_found:
         resp = make_response(jsonify('NOT FOUND'))
         resp.status_code = 404
@@ -145,7 +143,7 @@ def get_post_comments(question_id, answer_id):
     else:
         if request.method == 'GET':
             comments = OrderedDict()
-            comments_on_answer = (models.questions[question_id]
+            comments_on_answer = (models.Question.questions[question_id]
                                   .answers[answer_id].comments)
             if not comments_on_answer:
                 resp = make_response(jsonify(''))
@@ -170,8 +168,7 @@ def get_post_comments(question_id, answer_id):
                 return resp
             else:
                 comment = models.Comment(sender, comment)
-                models.comments[len(models.comments) + 1] = comment
-                (models.questions[question_id].answers[answer_id]
+                (models.Question.questions[question_id].answers[answer_id]
                  .add_comment(comment))
                 resp = make_response(jsonify('answer posted'))
                 resp.status_code = 201

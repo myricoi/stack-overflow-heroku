@@ -1,4 +1,4 @@
-from ..models import models
+from ..StackOverflow_Lite.models import models
 
 
 def test_User_correctly_constructed():
@@ -56,7 +56,6 @@ def test_classes_correctly_build_up_2():
     dickson.post_comment(com)
     quiz.add_answer(ans)
     ans.add_comment(com)
-    models.users.update({1: dickson, 2: manu})
     json1 = {'comment': 'yeah', 'timePosted':
              ans.time_created, 'commentBy': 'dickson'}
     assert com.unpack() == json1
@@ -74,7 +73,6 @@ def test_classes_correctly_build_up_3():
     dickson.post_comment(com)
     quiz.add_answer(ans)
     ans.add_comment(com)
-    models.users.update({1: dickson, 2: manu})
     json2 = {'answer': 'who you are', 'timePosted':
              ans.time_created, 'answeredBy': 'manu',
              'comments': {1: {'comment': 'yeah', 'timePosted':
@@ -94,7 +92,6 @@ def test_classes_correctly_build_up_4():
     dickson.post_comment(com)
     quiz.add_answer(ans)
     ans.add_comment(com)
-    models.users.update({1: dickson, 2: manu})
     json3 = {'question': 'who am I', 'timePosted':
              quiz.time_created, 'askedBy': 'dickson',
              'answers': {1: {'answer': 'who you are',
@@ -117,7 +114,6 @@ def test_classes_correctly_build_up_5():
     dickson.post_comment(com)
     quiz.add_answer(ans)
     ans.add_comment(com)
-    models.users.update({1: dickson, 2: manu})
     json = {'user': 'dickson', 'email': 'x@gmail.com',
             'signedUp': dickson.time_created, 'questionsPosted':
             {1: {'question': 'who am I', 'timePosted': quiz.time_created,
